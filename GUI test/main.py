@@ -73,7 +73,7 @@ rootHeader.place(x=0, y=0)
 rootHeaderText = ttk.Label(root, text='BREZENHEMA ALGORITMA IZMANTOŠANA 2D OBJEKTA PĀRVIETOŠANAI.', font=('arial', 16, 'bold'), fg='#ffffff', bg='#5159a7')
 rootHeaderText.place(x=230, y=5)
 
-rootPlotArea = ttk.Canvas(root, highlightthickness=0, bg='#bacae8', width=1100, height=550,cursor="tcross")
+rootPlotArea = ttk.Canvas(root, highlightthickness=0, bg='#bacae8', width=1100, height=550)
 rootPlotArea.place(x=80, y=120)
 
 #Grid
@@ -186,7 +186,7 @@ def getPoint(pos):
         Y2 = setPoint[3]
 
         logResult(X1,Y1,X2,Y2)
-
+        rootPlotArea.config(cursor="arrow")
         DrawLine(X1,Y1,X2,Y2,True)
         rootPlotArea.unbind('<Double-1>')
 
@@ -203,6 +203,7 @@ def Clear():
     print("CLEARED")
 
 def pickPointFromArea():
+    rootPlotArea.config(cursor="tcross")
     if len(setPoint) == 4:
         getLog("full")
         return
