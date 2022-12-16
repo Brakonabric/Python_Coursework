@@ -1,48 +1,52 @@
-https://www.tutorialspoint.com/changing-the-mouse-cursor-in-tkinter
-https://www.tutorialspoint.com/mouse-position-in-python-tkinter
-https://www.geeksforgeeks.org/python-gui-tkinter/
+    https://www.tutorialspoint.com/changing-the-mouse-cursor-in-tkinter
+    https://www.tutorialspoint.com/mouse-position-in-python-tkinter
+    https://www.geeksforgeeks.org/python-gui-tkinter/
 
 CLICK
 https://python-course.eu/tkinter/events-and-binds-in-tkinter.php
 
 DOC
-https://docs.python.org/3/library/tkinter.html
+    https://docs.python.org/3/library/tkinter.html
 
 POSITION
-https://www.geeksforgeeks.org/how-to-place-a-button-at-any-position-in-tkinter/
+    https://www.geeksforgeeks.org/how-to-place-a-button-at-any-position-in-tkinter/
 
 BUTTON STYLE
-https://www.geeksforgeeks.org/python-add-style-to-tkinter-button/?ref=rp
+    https://www.geeksforgeeks.org/python-add-style-to-tkinter-button/?ref=rp
 
 TOP LEVEL
-https://www.geeksforgeeks.org/python-tkinter-toplevel-widget/
+    https://www.geeksforgeeks.org/python-tkinter-toplevel-widget/
 
 SYTX
-https://www.tutorialspoint.com/python/tk_button.htm
-
-EMBED PLOT MATLIB:
-https://stackoverflow.com/questions/45885772/merge-matplotlib-in-a-tkinter-window
-https://www.geeksforgeeks.org/how-to-embed-matplotlib-charts-in-tkinter-gui/#:~:text=Embedding%20the%20Plot%3A,a%20toolbar%20at%20the%20bottom.
-https://www.youtube.com/watch?v=2MQEHYjfrf8
-https://www.youtube.com/watch?v=n_fskiNRuEI
+    https://www.tutorialspoint.com/python/tk_button.htm
 
 LABEL TEXT CHANGE:
-https://www.geeksforgeeks.org/how-to-change-the-tkinter-label-text/
+    https://www.geeksforgeeks.org/how-to-change-the-tkinter-label-text/
 
-https://www.w3schools.com/python/python_while_loops.asp
-https://www.geeksforgeeks.org/append-extend-python/
+    https://www.w3schools.com/python/python_while_loops.asp
+    https://www.geeksforgeeks.org/append-extend-python/
 
 try
-https://www.w3schools.com/python/python_try_except.asp
+    https://www.w3schools.com/python/python_try_except.asp
 
 message box
-https://docs.python.org/3/library/tkinter.messagebox.html
-
-clear MATLIB plot
-https://www.activestate.com/resources/quick-reads/how-to-clear-a-plot-in-python/
-
-TIME
-https://www.tutorialspoint.com/python/time_sleep.htm
+    https://docs.python.org/3/library/tkinter.messagebox.html
 
 delete convas
-https://stackoverflow.com/questions/23690993/how-do-we-delete-a-shape-thats-already-been-created-in-tkinter-canvas
+    https://stackoverflow.com/questions/23690993/how-do-we-delete-a-shape-thats-already-been-created-in-tkinter-canvas
+
+remove convas border
+    https://stackoverflow.com/questions/4310489/how-do-i-remove-the-light-grey-border-around-my-canvas-widget
+
+ievad bloki
+    https://datatofish.com/entry-box-tkinter/
+
+place
+    https://www.activestate.com/resources/quick-reads/how-to-position-widgets-in-tkinter/
+
+https://www.w3.org/wiki/Styling_lists_and_links%20?iframe=true&width=100%25&height=100%25
+
+
+
+
+

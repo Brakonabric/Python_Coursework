@@ -59,7 +59,7 @@ rootHeader.place(x=0, y=0)
 rootHeaderText = ttk.Label(root, text='BREZENHEMA ALGORITMA IZMANTOŠANA 2D OBJEKTA PĀRVIETOŠANAI.', font=('arial', 16, 'bold'), fg='#ffffff', bg='#5159a7')
 rootHeaderText.place(x=230, y=5)
 
-rootPlotArea = ttk.Canvas(root, highlightthickness=0, bg='#bacae8', width=1100, height=550)
+rootPlotArea = ttk.Canvas(root, highlightthickness=0, bg='#bacae8', width=1100, height=550,cursor="tcross")
 rootPlotArea.place(x=80, y=120)
 
 rootFooter = ttk.Canvas(root, highlightthickness=0, bg='#5159a7', width=1200, height=60)
