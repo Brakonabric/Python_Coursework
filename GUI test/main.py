@@ -280,11 +280,17 @@ def openSetPoint():
 
     def Apply():
         rootPlotArea.delete("toDraw")
-        x1 = int(enterX1.get())
-        y1 = int(enterY1.get())
-        x2 = int(enterX2.get())
-        y2 = int(enterY2.get())
+        getLog("clear")
         try:
+            x1 = int(enterX1.get())
+            y1 = int(enterY1.get())
+            x2 = int(enterX2.get())
+            y2 = int(enterY2.get())
+            if x1 < 0 or x1 > 1100 or y1 < 0 or y1 > 550 or x2 < 0 or x2 > 1100 or y2 < 0 or y2 > 550:
+                setPointWin.destroy()
+                messagebox.showwarning(title='Error', message='Koordinātas nav ievadītas vai ir ievadītas nepareizi. Grafika izmērs ir 1100px uz 550px')
+                return
+            
             logResult(x1,y1,x2,y2)
             DrawLine(x1,y1,x2,y2,True)
             setPointWin.destroy()
