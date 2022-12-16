@@ -1,8 +1,10 @@
 from tkinter import *
 import tkinter as ttk
 from tkinter import messagebox
+import time 
 
 ###BREZENHEMA ALGORITMA DAĻA
+motion = []
 def DrawLine(x1,y1,x2,y2,Draw):
     drawX = []
     drawY = []
@@ -22,6 +24,8 @@ def DrawLine(x1,y1,x2,y2,Draw):
     p=2*dy-dx   
     
     if dx>dy:
+        #sakumpunkts
+        rootPlotArea.create_oval(x-5,y-5,x+5,y+5,tags="toDraw",fill="#b76b32",outline="#b76b32")
         while x<x2:
             x=x+xs
             if p > 0:
@@ -29,9 +33,15 @@ def DrawLine(x1,y1,x2,y2,Draw):
                 p=p+2*dy-2*dx
             else:
                 p=p+2*dy
-            rootPlotArea.create_oval(x,y,x,y,tags="toDraw")
+            rootPlotArea.create_oval(x,y,x,y,tags="toDraw",fill="#f58220",outline="#f58220")
+            motion.append(x)
+            motion.append(y)
+        #galapunkts
+        rootPlotArea.create_oval(x-5,y-5,x+5,y+5,tags="toDraw",fill="#b76b32",outline="#b76b32")
             
     else:
+        #sakumpunkts
+        rootPlotArea.create_oval(x-5,y-5,x+5,y+5,tags="toDraw",fill="#b76b32",outline="#b76b32")
         while y!=y2:
             y=y+ys
             if p > 0:
@@ -39,8 +49,12 @@ def DrawLine(x1,y1,x2,y2,Draw):
                 p=p+2*dx-2*dy
             else:
                 p=p+2*dx
-            rootPlotArea.create_oval(x,y,x,y,tags="toDraw")
-
+            rootPlotArea.create_oval(x,y,x,y,tags="toDraw",fill="#f58220",outline="#f58220")
+            motion.append(x)
+            motion.append(y)
+        #galapunkts
+        rootPlotArea.create_oval(x-5,y-5,x+5,y+5,tags="toDraw",fill="#b76b32",outline="#b76b32")
+    createMotion()
     return
 
 ###GUI DAĻA
@@ -62,6 +76,27 @@ rootHeaderText.place(x=230, y=5)
 rootPlotArea = ttk.Canvas(root, highlightthickness=0, bg='#bacae8', width=1100, height=550,cursor="tcross")
 rootPlotArea.place(x=80, y=120)
 
+#Grid
+xGrid = 0
+while xGrid <= 22:
+    yGrid = 0
+    while yGrid <= 11:
+        rootPlotArea.create_oval(-3+(50*xGrid),-3+(50*yGrid),3+(50*xGrid),3+(50*yGrid),fill="#97a5bf",outline="#97a5bf")
+        yGrid+=1
+    xGrid+=1
+
+#xScale
+xScale = 0
+while xScale <= 22:
+    ttk.Label(root, text = (xScale*50),font=('arial', 11, 'bold'), fg='#ffffff', bg='#2a374a').place(x=(62+(xScale*50)), y=690)
+    xScale+=1
+
+#yScale
+yScale = 0
+while yScale <= 11:
+    ttk.Label(root,justify= "right", text = (yScale*50),font=('arial', 11, 'bold'), fg='#ffffff', bg='#2a374a').place(x=25, y=108+(yScale*50))
+    yScale+=1
+
 rootFooter = ttk.Canvas(root, highlightthickness=0, bg='#5159a7', width=1200, height=60)
 rootFooter.place(x=0, y=740)
 
@@ -72,6 +107,25 @@ logText = Label(root, text='> ::', font=('arial', 16, 'bold'), bg='#bacae8', fg=
 logText.place(x=90,y=755)
 
 #Functions
+#motion
+def createMotion():
+    if len(motion) > 0:
+        i = 0
+        while i < len(motion):
+            winUpdate()
+            x = motion[i]
+            y = motion[i+1]
+            rootPlotArea.delete("frame")
+            if i % 10 == 0:
+                time.sleep(0.002)
+            rootPlotArea.create_oval(x-10,y-10,x+10,y+10,tags="frame",fill="#b76b32",outline="#b76b32")
+            i+=2
+        createMotion()
+    else:
+        return
+
+
+
     #XY axis traking function
 def showPosition(pos):
     x = pos.x
@@ -138,9 +192,13 @@ def getPoint(pos):
 
     #clear plot
 def Clear():
-    getLog("clear")
+    rootPlotArea.unbind('<Double-1>')
+    rootPlotArea.delete("frame")
+    global motion
+    motion = []
     global setPoint
     setPoint = []
+    getLog("clear")
     rootPlotArea.delete("toDraw")
     print("CLEARED")
 
@@ -214,14 +272,14 @@ def openHelp():
     ccInfoText.place(x=215,y=180)
     
         #Buttons
-    helpOkButton = Button(helpWin, text="OK", font=('arial', 8, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=78,relief='flat', command=helpWin.destroy).place(x=12, y=210)
+    helpOkButton = Button(helpWin, text="OK", font=('arial', 8, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=78,relief='flat', command=helpWin.destroy)
+    helpOkButton.place(x=12, y=210)
 
     helpWin.mainloop()
 
     #child windows SET POINT
 def openSetPoint():
-    rootPlotArea.unbind('<Double-1>')
-    getLog("clear")
+    Clear()
     setPointWin = Toplevel()
     setPointWin.title("Set point: Trajektorijas koordinātu izvēle")
     setPointWin.geometry('280x143')
@@ -280,7 +338,7 @@ def openSetPoint():
     yInputBlockEnd.create_window(62,10,window=enterY2)
 
     def Apply():
-        rootPlotArea.delete("toDraw")
+        Clear()
         try:
             x1 = int(enterX1.get())
             y1 = int(enterY1.get())
@@ -290,15 +348,13 @@ def openSetPoint():
                 setPointWin.destroy()
                 messagebox.showwarning(title='Error', message='Koordinātas nav ievadītas vai ir ievadītas nepareizi. Grafika izmērs ir 1100px uz 550px')
                 return
-            
+            setPointWin.destroy()
             logResult(x1,y1,x2,y2)
             DrawLine(x1,y1,x2,y2,True)
-            setPointWin.destroy()
         except:
             setPointWin.destroy()
             messagebox.showwarning(title='Error', message='Koordinātas nav ievadītas vai ir ievadītas nepareizi. Grafika izmērs ir 1100px uz 550px')
             
-        
         #button
     spApplyButton = Button(setPointWin, text="Apply", font=('arial', 8, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=16, relief='flat', command=Apply)
     spApplyButton.place(x=11,y=110)
@@ -322,5 +378,9 @@ clearButton.place(x=813, y=60)
 
 closeButton = Button(root, text="CLOSE", font=('arial', 16, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=13,relief='flat', command=root.destroy)
 closeButton.place(x=1004, y=60)
+def winUpdate():
+    root.update()
+    rootPlotArea.update()
+    logBox.update()
 
-mainloop()
+root.mainloop()
