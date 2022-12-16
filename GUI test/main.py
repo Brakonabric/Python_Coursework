@@ -31,8 +31,6 @@ def DrawLine(x1,y1,x2,y2,Draw):
                 p=p+2*dy
             rootPlotArea.create_oval(x,y,x,y,tags="toDraw")
             
-
-            
     else:
         while y!=y2:
             y=y+ys
@@ -89,42 +87,70 @@ rootPlotArea.bind('<Motion>', showPosition)
 #rootPlotArea.bind('<Double-1>', showPosition)
 
     #LogBox text update
+showX1 = 0
+showY1 = 0
+showX2 = 0
+showY2 = 0
+
 logMsgStart = "> :: Lūdzu, atlasiet sākumpunktu, veicot dubultklikšķi uz loga" 
 logMsgEnd = "> :: Lūdzu, atlasiet galapunktu, veicot dubultklikšķi uz loga" 
-logMsgResult = "> :: Sākumpunkts X1 = %a Y1 = %a --- Galaounkts X2 = %a Y2 = %a" % (1,2,3,4)
-def getLog():
+logMsgFull = "> :: Lūdzu, notīriet trajektorijas ekrāna lauku, noklikšķinot uz pogas \"CLEAR\""
+logMsgClear = "> :: "
+
+def logResult(x1,y1,x2,y2):
+    logMsgResult = "> :: Sākumpunkts X1 = %a, Y1 = %a; Galapunkts X2 = %a, Y2 = %a." % (x1,y1,x2,y2)
+    logText.config(text = logMsgResult)
+
+def getLog(msg):
+    global logMsgStart
     global logMsgEnd
-    logText.config(text = logMsgEnd)
-
-
+    global logMsgFull
+    global logMsgResult
+    global logMsgClear
+    if msg == "start":
+        logText.config(text = logMsgStart)
+    elif msg == "end":
+        logText.config(text = logMsgEnd)
+    elif msg == "clear":
+        logText.config(text = logMsgClear)
+    else:
+        logText.config(text = logMsgFull)
+    
     #Child windows HELP
-
 setPoint = []
-def CheckPos(pos):
+def getPoint(pos):
     getX = int(pos.x)
     getY = int(pos.y)
     if len(setPoint) < 4:
+        getLog("end")
         setPoint.append(getX)
         setPoint.append(getY)
-    else:
-        print("FULL")
     if len(setPoint) == 4:
         X1 = setPoint[0]
         Y1 = setPoint[1]
         X2 = setPoint[2]
         Y2 = setPoint[3]
+
+        logResult(X1,Y1,X2,Y2)
+
         DrawLine(X1,Y1,X2,Y2,True)
         rootPlotArea.unbind('<Double-1>')
 
     #clear plot
 def Clear():
+    getLog("clear")
     global setPoint
     setPoint = []
     rootPlotArea.delete("toDraw")
     print("CLEARED")
 
-def checkMain():
-    rootPlotArea.bind('<Double-1>', CheckPos)
+def pickPointFromArea():
+    if len(setPoint) == 4:
+        getLog("FULL")
+        print("FULL")
+        return
+    getLog("start")
+    rootPlotArea.bind('<Double-1>', getPoint)
     
     
 def openHelp():
@@ -259,6 +285,7 @@ def openSetPoint():
         x2 = int(enterX2.get())
         y2 = int(enterY2.get())
         try:
+            logResult(x1,y1,x2,y2)
             DrawLine(x1,y1,x2,y2,True)
             setPointWin.destroy()
         except:
@@ -275,7 +302,7 @@ def openSetPoint():
     setPointWin.mainloop()
 
 #Root Win buttons
-pPointButton = Button(root, text="PICK POINT", font=('arial', 16, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=19,relief='flat',command=checkMain)
+pPointButton = Button(root, text="PICK POINT", font=('arial', 16, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=19,relief='flat',command=pickPointFromArea)
 pPointButton.place(x=80, y=60)
 
 sPointButton = Button(root, text="SET POINT", font=('arial', 16, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=19,relief='flat',command=openSetPoint)
