@@ -146,8 +146,7 @@ def Clear():
 
 def pickPointFromArea():
     if len(setPoint) == 4:
-        getLog("FULL")
-        print("FULL")
+        getLog("full")
         return
     getLog("start")
     rootPlotArea.bind('<Double-1>', getPoint)
@@ -221,6 +220,8 @@ def openHelp():
 
     #child windows SET POINT
 def openSetPoint():
+    rootPlotArea.unbind('<Double-1>')
+    getLog("clear")
     setPointWin = Toplevel()
     setPointWin.title("Set point: Trajektorijas koordinātu izvēle")
     setPointWin.geometry('280x143')
@@ -280,7 +281,6 @@ def openSetPoint():
 
     def Apply():
         rootPlotArea.delete("toDraw")
-        getLog("clear")
         try:
             x1 = int(enterX1.get())
             y1 = int(enterY1.get())
