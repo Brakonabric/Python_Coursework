@@ -25,7 +25,7 @@ def DrawLine(x1,y1,x2,y2,Draw):
     
     if dx>dy:
         #sakumpunkts
-        rootPlotArea.create_oval(x-5,y-5,x+5,y+5,tags="toDraw",fill="#b76b32",outline="#b76b32")
+        rootPlotArea.create_oval(x-5,y-5,x+5,y+5,tags="toDraw",fill="#f58220",outline="#f58220")
         while x<x2:
             x=x+xs
             if p > 0:
@@ -37,12 +37,12 @@ def DrawLine(x1,y1,x2,y2,Draw):
             motion.append(x)
             motion.append(y)
         #galapunkts
-        rootPlotArea.create_oval(x-5,y-5,x+5,y+5,tags="toDraw",fill="#b76b32",outline="#b76b32")
+        rootPlotArea.create_oval(x-5,y-5,x+5,y+5,tags="toDraw",fill="#f58220",outline="#f58220")
             
     else:
         #sakumpunkts
-        rootPlotArea.create_oval(x-5,y-5,x+5,y+5,tags="toDraw",fill="#b76b32",outline="#b76b32")
-        while y!=y2:
+        rootPlotArea.create_oval(x-5,y-5,x+5,y+5,tags="toDraw",fill="#f58220",outline="#f58220")
+        while y<y2:
             y=y+ys
             if p > 0:
                 x=x+xs
@@ -53,7 +53,7 @@ def DrawLine(x1,y1,x2,y2,Draw):
             motion.append(x)
             motion.append(y)
         #galapunkts
-        rootPlotArea.create_oval(x-5,y-5,x+5,y+5,tags="toDraw",fill="#b76b32",outline="#b76b32")
+        rootPlotArea.create_oval(x-5,y-5,x+5,y+5,tags="toDraw",fill="#f58220",outline="#f58220")
     createMotion()
     return
 
@@ -81,7 +81,7 @@ xGrid = 0
 while xGrid <= 22:
     yGrid = 0
     while yGrid <= 11:
-        rootPlotArea.create_oval(-3+(50*xGrid),-3+(50*yGrid),3+(50*xGrid),3+(50*yGrid),fill="#97a5bf",outline="#97a5bf")
+        rootPlotArea.create_oval(-3+(50*xGrid),-3+(50*yGrid),3+(50*xGrid),3+(50*yGrid),fill="#5159a7",outline="#5159a7")
         yGrid+=1
     xGrid+=1
 
@@ -109,7 +109,9 @@ logText.place(x=90,y=755)
 #Functions
 #motion
 def createMotion():
-    if len(motion) > 0:
+    if len(motion) == 0:
+        return
+    try:
         i = 0
         while i < len(motion):
             winUpdate()
@@ -118,11 +120,12 @@ def createMotion():
             rootPlotArea.delete("frame")
             if i % 10 == 0:
                 time.sleep(0.002)
-            rootPlotArea.create_oval(x-10,y-10,x+10,y+10,tags="frame",fill="#b76b32",outline="#b76b32")
+            rootPlotArea.create_oval(x-10,y-10,x+10,y+10,tags="frame",fill="#5159a7",outline="#5159a7")
             i+=2
         createMotion()
-    else:
-        return
+    except:
+        print("motion stopped")
+    
 
 
 
@@ -141,11 +144,6 @@ rootPlotArea.bind('<Motion>', showPosition)
 #rootPlotArea.bind('<Double-1>', showPosition)
 
     #LogBox text update
-showX1 = 0
-showY1 = 0
-showX2 = 0
-showY2 = 0
-
 logMsgStart = "> :: Lūdzu, atlasiet sākumpunktu, veicot dubultklikšķi uz loga" 
 logMsgEnd = "> :: Lūdzu, atlasiet galapunktu, veicot dubultklikšķi uz loga" 
 logMsgFull = "> :: Lūdzu, notīriet trajektorijas ekrāna lauku, noklikšķinot uz pogas \"CLEAR\""
@@ -200,19 +198,19 @@ def Clear():
     setPoint = []
     getLog("clear")
     rootPlotArea.delete("toDraw")
-    print("CLEARED")
 
 def pickPointFromArea():
-    rootPlotArea.config(cursor="tcross")
     if len(setPoint) == 4:
         getLog("full")
         return
+    rootPlotArea.config(cursor="tcross")
     getLog("start")
     rootPlotArea.bind('<Double-1>', getPoint)
     
     
 def openHelp():
     #setting
+    winUpdate()
     helpWin = Toplevel()
     helpWin.title('Help: Pogu apraksts')
     helpWin.geometry('580x243')
