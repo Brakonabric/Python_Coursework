@@ -4,14 +4,14 @@ from tkinter import messagebox
 import time
 
 #   Primāra loga iestatījumi:
-root = Tk()                                 #   Primāra loga inicijalizacija.
+root = Tk()                                 #   Primāra loga inicijalizacija ar nosaukumu root.
 root['bg'] = '#2a374a'                      #   Primāra loga fona krāsa.
 root.title('Linass Jokšass 221RDB522')      #   Primāra loga nosaukums.
 root.geometry('1200x800')                   #   Primāra loga izmērs.
 root.resizable(width=False, height=False)   #   Aizslēgt primāra loga mērogošanu.
 
 #   Izmantojiet Tkinter bibliotēkas Canvas klasi, lai izveidotu taisnstūrveida/bloku objektu, izmantojot šādus parametrus:
-    #   root,                           - Vecākās loga/vidžeta nosaukums, kurā atrodas poga.
+    #   <nosaukums>,                    - Vecākās loga/vidžeta nosaukums, kurā atrodas objekts.
     #   highlightthickness = <skaits>,  - Parametrs tiek izmantots, lai atbrīvotos no objekta ramja, nevis parametrš "borderwidth=", kas ramjā vietā atstāj baltu artefaktu.
     #   bg = '<krāsa>',                 - Objekta krāsa.
     #   width = <skaits>,               - Objekta platums.
@@ -22,7 +22,7 @@ rootFooter = Canvas(root, highlightthickness=0, bg='#5159a7', width=1200, height
 logBox = Canvas(root, highlightthickness=0, bg='#bacae8', width=1100, height=40)
 
 #   Izmantojiet Tkinter bibliotēkas Label klasi, lai izveidotu teksta objektu, izmantojot šādus parametrus:
-    #   root,                                                        - Vecākās loga/vidžeta nosaukums, kurā atrodas poga.
+    #   <nosaukums>,                                                 - Vecākās loga/vidžeta nosaukums, kurā atrodas objekts.
     #   text = '<tekts>',                                            - Teksts uz pogas.
     #   font = (<'teksta fonti','teksta izmērs','teksta stils'>'),   - Teksta iestatījumi.
     #   fg = '<krāsa>',                                              - Teksta krāsa.
@@ -46,8 +46,8 @@ while xGrid <= 22:      #   Izveido lodveida figūru uz rootPlotArea objektā ar
     while yGrid <= 11:  #   Izveido lodveida figūru uz rootPlotArea objektā ar vertikālu atstarpi 50 pikseļi, kamer yGrid koeficients nesasniedz 11.
         #   Izmantojiet Tkinter bibliotēkas Canvas klasā metodu Create_oval, lai izveidotu lodveida figūra virs objekta, izmantojot šādus parametrus:
             #   <skaits>,               - x koordinātas sākum punkts.
-            #   <skaits>,               - y koordinātas gala punkts.
-            #   <skaits>,               - x koordinātas sākum punkts.
+            #   <skaits>,               - y koordinātas sākum punkts.
+            #   <skaits>,               - x koordinātas gala punkts.
             #   <skaits>,               - y koordinātas gala punkts.
             #   fill = "<krāsa>",       - figūras krāsa.
             #   outline = "<krāsa>",    - figūras apmales krāsa.
@@ -71,8 +71,25 @@ while yScale <= 11: #   Izveido teksta objektu ar vertikālu atstarpi 50 pikseļ
 #endregion
 
 #region Funkcijas
+#   showPosition funkcija izmanto Tkinter bibliotēku, lai iegūtu informāciju par peles peles kursora pozīciju uz objekta.
+#   Informācija tiek atjaunināta katru reizi, kad kursors pārvietojas virs objekta, saņemtās koordinātas tiek parādītas kā dinamisks teksta objekts.
+def showPosition(pos):  #   "pos" - arguments, kas satur informāciju par objektu zem peles kursora.
+    x = pos.x           #   X koordinātas skaitliskais apzīmējums, kas iegūts no argumenta "pos".
+    y = pos.y           #   Y koordinātas skaitliskais apzīmējums, kas iegūts no argumenta "pos".
+
+    #   Teksta objekts tika izveidots tādā pašā veidā kā 24. rindā.
+    xPos = ttk.Label(root, text='X: %a   ' % (x), font=('arial', 10, 'bold'), fg='#ffffff', bg='#5159a7')
+    yPos = ttk.Label(root, text='Y: %a   ' % (y), font=('arial', 10, 'bold'), fg='#ffffff', bg='#5159a7')
+
+    #   Objekts tika novietots tādā pašā veidā kā 33. rindā.
+    xPos.place(x=17, y=750)
+    yPos.place(x=17, y=770)
+#   BIND metode izsauc funkciju katru reizi, kad notiek norādītais notikums.
+rootPlotArea.bind('<Motion>', showPosition)     #   <objekta nosaukums>.bind('<notikums>', <funkcija, kuru izsauc notikums>)
+
+
 motion = []
-def DrawLine(x1, y1, x2, y2, Draw):
+def DrawLine(x1, y1, x2, y2):
     dx = abs(x2-x1)
     dy = abs(y2-y1)
 
@@ -80,6 +97,7 @@ def DrawLine(x1, y1, x2, y2, Draw):
         xs = 1
     else:
         xs = -1
+    
     if y1 < y2:
         ys = 1
     else:
@@ -111,7 +129,7 @@ def DrawLine(x1, y1, x2, y2, Draw):
         # sakumpunkts
         rootPlotArea.create_oval(
             x-5, y-5, x+5, y+5, tags="toDraw", fill="#f58220", outline="#f58220")
-        while y != y2:
+        while y < y2:
             y = y+ys
             if p > 0:
                 x = x+xs
@@ -142,251 +160,224 @@ def createMotion():
             rootPlotArea.create_oval(
                 x-10, y-10, x+10, y+10, tags="frame", fill="red", outline="red")
             i += 8
-        #createMotion()
+        createMotion()
     except:
         print("motion stopped")
-        
-def showPosition(pos):
-    x = pos.x
-    y = pos.y
 
-    xPos = ttk.Label(root, text='X: %a   ' % (x), font=(
-        'arial', 10, 'bold'), fg='#ffffff', bg='#5159a7')
-    xPos.place(x=17, y=750)
+#   Funkcija logResult atjauno parametra "text=" saturu ar vērtībām no argumentiem.
+def logResult(x1, y1, x2, y2):          #   Argumenti, kas jāsatur koordinātas.
+    global logMsgResult                 #   Maina logMsgStart vērtību, iegūt informāciju no argumenta.
+    logMsgResult = "> :: Sākumpunkts X1 = %a, Y1 = %a; Galapunkts X2 = %a, Y2 = %a." % (x1, y1, x2, y2)
+    logText.config(text=logMsgResult)   #   Parametrs "text=" tiek aizstāts ar logMsgResult vērtību.
 
-    yPos = ttk.Label(root, text='Y: %a   ' % (y), font=(
-        'arial', 10, 'bold'), fg='#ffffff', bg='#5159a7')
-    yPos.place(x=17, y=770)
-rootPlotArea.bind('<Motion>', showPosition)
-
-# LogBox text update
-def logResult(x1, y1, x2, y2):
-    logMsgResult = "> :: Sākumpunkts X1 = %a, Y1 = %a; Galapunkts X2 = %a, Y2 = %a." % (
-        x1, y1, x2, y2)
-    logText.config(text=logMsgResult)
-
+#   Funkcijas getLog nepieciešamas konstantes
 logMsgStart = "> :: Lūdzu, atlasiet sākumpunktu, veicot dubultklikšķi uz loga"
 logMsgEnd = "> :: Lūdzu, atlasiet galapunktu, veicot dubultklikšķi uz loga"
 logMsgFull = "> :: Lūdzu, notīriet trajektorijas ekrāna lauku, noklikšķinot uz pogas \"CLEAR\""
 logMsgClear = "> :: "
 
+#   getLog ir funkcija, kas maina "text=" parametra saturu Label objektā logText, kas atrodas 31. rindā.
 def getLog(msg):
-    global logMsgStart
-    global logMsgEnd
-    global logMsgFull
-    global logMsgResult
-    global logMsgClear
-    if msg == "start":
-        logText.config(text=logMsgStart)
-    elif msg == "end":
-        logText.config(text=logMsgEnd)
-    elif msg == "clear":
+    global logMsgStart                      #   Maina logMsgStart vērtību visā kodā atkarībā no nosacījuma.
+    global logMsgEnd                        #   Maina logMsgEnd vērtību visā kodā atkarībā no nosacījuma.
+    global logMsgFull                       #   Maina logMsgFull vērtību visā kodā atkarībā no nosacījuma.
+    global logMsgClear                      #   Maina logMsgClear vērtību visā kodā atkarībā no nosacījuma.
+    if msg == "start":                      #   Ja argumets (msg) satur virkni "start",tad parametrs "text=" tiek aizstāts ar logMsgStart vērtību.
+        logText.config(text=logMsgStart)    
+    elif msg == "end":                      #   Ja argumets (msg) satur virkni "end",tad parametrs "text=" tiek aizstāts ar logMsgEnd vērtību.   
+        logText.config(text=logMsgEnd)      
+    elif msg == "clear":                    #   Ja argumets (msg) satur virkni "clear",tad parametrs "text=" tiek aizstāts ar logMsgClear vērtību.
         logText.config(text=logMsgClear)
-    else:
+    else:                                   #   Cita gadijuma parametrs "text=" tiek aizstāts ar logMsgFull vērtību.
         logText.config(text=logMsgFull)
 
-setPoint = []
-def getPoint(pos):
-    getX = int(pos.x)
-    getY = int(pos.y)
-    if len(setPoint) < 4:
-        getLog("end")
-        setPoint.append(getX)
-        setPoint.append(getY)
-    if len(setPoint) == 4:
-        X1 = setPoint[0]
-        Y1 = setPoint[1]
-        X2 = setPoint[2]
-        Y2 = setPoint[3]
+setPoint = []                                   #   Masīva inicializēšana funkcijai getPoint.
+#   Funkcija getPoint darbojas pēc analoģijas ar showPosition funkciju 76. rindā.
+def getPoint(pos):  
+    getX = int(pos.x)                           
+    getY = int(pos.y)                           
+    if len(setPoint) < 4:                       #   Ja masīva pēdējā elementa vērtība ir mazāka par 4, tad:
+        getLog("end")                           
+        setPoint.append(getX)                       #   Nākamais masīva elements tiek aizpildīts ar x koordinātas vērtību.
+        setPoint.append(getY)                       #   Nākamais masīva elements tiek aizpildīts ar y koordinātas vērtību.
 
-        logResult(X1, Y1, X2, Y2)
-        rootPlotArea.config(cursor="arrow")
-        DrawLine(X1, Y1, X2, Y2, True)
-        rootPlotArea.unbind('<Double-1>')
+    if len(setPoint) == 4:                      #   Ja masīva pēdējā elementa vērtība ir 4, tad:
+        X1 = setPoint[0]                            #   Iegūst sākotnējo X no masīva.
+        Y1 = setPoint[1]                            #   Iegūst sākotnējo Y no masīva.
+        X2 = setPoint[2]                            #   Iegūst galīgo X no masīva.
+        Y2 = setPoint[3]                            #   Iegūst galīgo Y no masīva.
+        logResult(X1, Y1, X2, Y2)                   #   Izsauc logResult funkciju ar argumentiem, kas satur koordinātas.
+        rootPlotArea.config(cursor="arrow")         #   Atgriež parasto kursoru.
+        DrawLine(X1, Y1, X2, Y2)                    #   Izsauc DrawLine funkciju ar argumentiem, kas satur koordinātas.
+        rootPlotArea.unbind('<Double-1>')           #   Atvieno notikumu no visas funkcijas.
 
+#   Funkcija Clear aptur animāciju un izdzēš masīvu saturu, atgriež mainīgos to sākotnējā stāvoklī, lai citas funkcijas darbotos pareizi.
 def Clear():
-    rootPlotArea.unbind('<Double-1>')
-    rootPlotArea.delete("frame")
     global motion
-    motion = []
     global setPoint
-    setPoint = []
+    motion = []                         #   Dzēš motion masīva saturu.
+    setPoint = []                       #   Dzēš setPoint masīva saturu.
+    rootPlotArea.unbind('<Double-1>')   #   Atvieno funkciju no notikuma.
+    rootPlotArea.delete("frame")        #   Dzēš visas figūras, kurām ir tags "frame".
     getLog("clear")
-    rootPlotArea.delete("toDraw")
+    rootPlotArea.delete("toDraw")       #   Dzēš visas figūras, kurām ir tags "toDraw".
 
+#   Close ir funkcija, kas izslēdz aplikāciju.
 def Close():
-    Clear()
-    root.destroy()
+    root.destroy()  #   <loga/vidžeta nosakums>.destroy() aptur loga rādīšanu, tādējādi izslēdzot visus ar to saistītos procesus.
 
+#   Funkcija pickPointFromArea pārbauda masīva stāvokli un saista dubultklikšķa notikumu ar funkciju getPoint.
+#   Informācija getPoint funkcijā tiek atjaunināta katru reizi, veicot dubultklikšķi uz objekta ar peles kreiso pogu.
 def pickPointFromArea():
-    if len(setPoint) == 4:
+    if len(setPoint) == 4:                          #   Ja masīvam jau ir sākuma un beigas punkta koordinātas, izvada brīdinājumu un aptur funkciju.
         getLog("full")
         return
-    rootPlotArea.config(cursor="tcross")
+    rootPlotArea.config(cursor="tcross")            #   Maina kursora izskatu uz krustu.
     getLog("start")
-    rootPlotArea.bind('<Double-1>', getPoint)
+    rootPlotArea.bind('<Double-1>', getPoint)       #   Saista dubultklikšķi ar funkciju getPoint. 
 
+#   Funkcija OpenHelp izveido sekundāro logu:
 def openHelp():
-    # setting
-    helpWin = Toplevel()
-    helpWin.title('Help: Pogu apraksts')
-    helpWin.geometry('580x243')
-    helpWin.resizable(width=False, height=False)
-    helpWin['bg'] = '#2a374a'
+    helpWin = Toplevel()                            #   Sekundāra loga inicijalizacija ar nosaukumu helpWin.
+    helpWin.title('Help: Pogu apraksts')            #   Sekundāra loga nosaukums.
+    helpWin.geometry('580x243')                     #   Sekundāra loga izmērs.
+    helpWin.resizable(width=False, height=False)    #   Aizslēgt sekundāra loga mērogošanu.
+    helpWin['bg'] = '#2a374a'                       #   Sekundāra loga fona krāsa.
 
-    # Block grid
-    # Pick Point block
-
+    #   Cikls izveido vairākus identiskus Canvas objektus ar atkāpi atkarībā no step koeficienta.
     for i in range(4):
         step = 50 * i
-        ttk.Canvas(helpWin, highlightthickness=0, bg='#5159a7',
-                   width=560, height=20).place(x=10, y=10+step)
-        ttk.Canvas(helpWin, highlightthickness=0, bg='#647abc',
-                   width=560, height=20).place(x=10, y=30+step)
+        #   Taisnstūrveida/bloka objekta tika izveidots tādā pašā veidā kā 13. rindā.  
+        ttk.Canvas(helpWin, highlightthickness=0, bg='#5159a7', width=560, height=20).place(x=10, y=10+step)
+        ttk.Canvas(helpWin, highlightthickness=0, bg='#647abc', width=560, height=20).place(x=10, y=30+step)
 
-    ppHeaderText = ttk.Label(helpWin, text='PICK POINT', font=(
-        'arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
+    #   Teksta objekts tika izveidots tādā pašā veidā kā 24. rindā.
+    ppHeaderText = ttk.Label(helpWin, text='PICK POINT', font=('arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
+    ppInfoText = ttk.Label(helpWin, text='Norādiet trajektorijas sākuma un beigu punktu, noklikšķinot uz ekrāna.', font=('arial', 8, 'bold'), bg='#647abc', fg='#ffffff')
+    spHeaderText = ttk.Label(helpWin, text='SET POINT', font=('arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
+    spInfoText = ttk.Label(helpWin, text='Norādiet trajektorijas sākuma un beigu punktu x y koordinātas, noklikšķinot uz ekrāna.', font=('arial', 8, 'bold'), bg='#647abc', fg='#ffffff')
+    clHeaderText = ttk.Label(helpWin, text='CLEAR', font=('arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
+    clInfoText = ttk.Label(helpWin, text='Notīrīt trajektorijas ekrāna lauku.', font=('arial', 8, 'bold'), bg='#647abc', fg='#ffffff')
+    ccHeaderText = ttk.Label(helpWin, text='CANCEL', font=('arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
+    ccInfoText = ttk.Label(helpWin, text='Pārtraukt programmu.', font=('arial', 8, 'bold'), bg='#647abc', fg='#ffffff')
+
+    #   Pogas objekts tika izveidots tādā pašā veidā kā 333 rindā.
+    helpOkButton = Button(helpWin, text="OK", font=('arial', 8, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=78, relief='flat', command=helpWin.destroy)
+
+    #   Objekts tika novietots tādā pašā veidā kā 33. rindā.
     ppHeaderText.place(x=255, y=10)
-
-    ppInfoText = ttk.Label(helpWin, text='Norādiet trajektorijas sākuma un beigu punktu, noklikšķinot uz ekrāna.', font=(
-        'arial', 8, 'bold'), bg='#647abc', fg='#ffffff')
     ppInfoText.place(x=80, y=30)
-
-    spHeaderText = ttk.Label(helpWin, text='SET POINT', font=(
-        'arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
     spHeaderText.place(x=255, y=60)
-
-    spInfoText = ttk.Label(helpWin, text='Norādiet trajektorijas sākuma un beigu punktu x y koordinātas, noklikšķinot uz ekrāna.', font=(
-        'arial', 8, 'bold'), bg='#647abc', fg='#ffffff')
     spInfoText.place(x=45, y=80)
-
-    clHeaderText = ttk.Label(helpWin, text='CLEAR', font=(
-        'arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
     clHeaderText.place(x=262, y=110)
-
-    clInfoText = ttk.Label(helpWin, text='Notīrīt trajektorijas ekrāna lauku.', font=(
-        'arial', 8, 'bold'), bg='#647abc', fg='#ffffff')
     clInfoText.place(x=190, y=130)
-
-    ccHeaderText = ttk.Label(helpWin, text='CANCEL', font=(
-        'arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
     ccHeaderText.place(x=258, y=160)
-
-    ccInfoText = ttk.Label(helpWin, text='Pārtraukt programmu.', font=(
-        'arial', 8, 'bold'), bg='#647abc', fg='#ffffff')
     ccInfoText.place(x=215, y=180)
-
-    # Buttons
-    helpOkButton = Button(helpWin, text="OK", font=('arial', 8, 'bold'), bg='#f58220', fg='#ffffff',
-                          activebackground='#b76b32', width=78, relief='flat', command=helpWin.destroy)
     helpOkButton.place(x=12, y=210)
 
+    #  Sekundāra loga attēlošana cilpās, tāpēc tas tiek rādīts visu laiku, līdz funkcija tiek apturēta.
     helpWin.mainloop()
 
+#   Funkcija openSetPoint izveido sekundāro logu:
 def openSetPoint():
-    Clear()
-    setPointWin = Toplevel()
-    setPointWin.title("Set point: Trajektorijas koordinātu izvēle")
-    setPointWin.geometry('280x143')
-    setPointWin.resizable(width=False, height=False)
-    setPointWin['bg'] = '#2a374a'
+    Clear()                                                             #   Notīra konfliktējošos koda elementus.
+    setPointWin = Toplevel()                                            #   Sekundāra loga inicijalizacija ar nosaukumu helpWin.
+    setPointWin.title("Set point: Trajektorijas koordinātu izvēle")     #   Sekundāra loga nosaukums.
+    setPointWin.geometry('280x143')                                     #   Sekundāra loga izmērs.
+    setPointWin.resizable(width=False, height=False)                    #   Aizslēgt sekundāra loga mērogošanu.
+    setPointWin['bg'] = '#2a374a'                                       #   Sekundāra loga fona krāsa.
 
-    # block grid
-    # x axis block
-    xBlockStart = ttk.Canvas(
-        setPointWin, highlightthickness=0, bg='#5159a7', width=125, height=20)
-    xBlockStart.place(x=10, y=10)
+    #   Taisnstūrveida/bloka objekts tika izveidots tādā pašā veidā kā 13. rindā.
+    xBlockStart = ttk.Canvas(setPointWin, highlightthickness=0, bg='#5159a7', width=125, height=20)
+    xBlockEnd = ttk.Canvas(setPointWin, highlightthickness=0, bg='#5159a7', width=125, height=20)
+    yBlockStart = ttk.Canvas(setPointWin, highlightthickness=0, bg='#5159a7', width=125, height=20)
+    yBlockEnd = ttk.Canvas(setPointWin, highlightthickness=0, bg='#5159a7', width=125, height=20)
+    xInputBlockStart = ttk.Canvas(setPointWin, highlightthickness=0, bg='#bacae8', width=125, height=20)
+    xInputBlockEnd = ttk.Canvas(setPointWin, highlightthickness=0, bg='#bacae8', width=125, height=20)
+    yInputBlockStart = ttk.Canvas(setPointWin, highlightthickness=0, bg='#bacae8', width=125, height=20)
+    yInputBlockEnd = ttk.Canvas(setPointWin, highlightthickness=0, bg='#bacae8', width=125, height=20)
 
-    xBlockEnd = ttk.Canvas(setPointWin, highlightthickness=0,
-                           bg='#5159a7', width=125, height=20)
-    xBlockEnd.place(x=10, y=60)
-
-    xTextStart = ttk.Label(setPointWin, text='X Sākumpunkts', font=(
-        'arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
-    xTextStart.place(x=25, y=10)
-
-    XTextEnd = ttk.Label(setPointWin, text='X Galapunkts', font=(
-        'arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
-    XTextEnd.place(x=30, y=60)
-
-    # y axis block
-    yBlockStart = ttk.Canvas(
-        setPointWin, highlightthickness=0, bg='#5159a7', width=125, height=20)
-    yBlockStart.place(x=145, y=10)
-
-    yBlockEnd = ttk.Canvas(setPointWin, highlightthickness=0,
-                           bg='#5159a7', width=125, height=20)
-    yBlockEnd.place(x=145, y=60)
-
-    yTextStart = ttk.Label(setPointWin, text='Y Sākumpunkts', font=(
-        'arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
-    yTextStart.place(x=160, y=10)
-
-    yTextEnd = ttk.Label(setPointWin, text='Y Galapunkts', font=(
-        'arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
-    yTextEnd.place(x=170, y=60)
-
-    # input blocks
-    # X axis input block
-    xInputBlockStart = ttk.Canvas(
-        setPointWin, highlightthickness=0, bg='#bacae8', width=125, height=20)
-    xInputBlockStart.place(x=10, y=30)
+    #   Taisnstūrveida/bloka objekts tika izveidots tādā pašā veidā kā 24. rindā.
+    xTextStart = ttk.Label(setPointWin, text='X Sākumpunkts', font=('arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
+    XTextEnd = ttk.Label(setPointWin, text='X Galapunkts', font=('arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
+    yTextStart = ttk.Label(setPointWin, text='Y Sākumpunkts', font=('arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
+    yTextEnd = ttk.Label(setPointWin, text='Y Galapunkts', font=('arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
+    
+    #   Izmantojot Tkinter bibliotēku, izveido tukšu vidžetu, kas pieņem informāciju no ievades loga, izmantojot šādus parametrus:
+        #   <nosaukums>       - Vecākās loga/vidžeta nosaukums, kurā atrodas objekts.
     enterX1 = ttk.Entry(setPointWin)
-    xInputBlockStart.create_window(62, 10, window=enterX1)
-
-    xInputBlockEnd = ttk.Canvas(
-        setPointWin, highlightthickness=0, bg='#bacae8', width=125, height=20)
-    xInputBlockEnd.place(x=10, y=80)
     enterX2 = ttk.Entry(setPointWin)
-    xInputBlockEnd.create_window(62, 10, window=enterX2)
-
-    # Y axis input block
-    yInputBlockStart = ttk.Canvas(
-        setPointWin, highlightthickness=0, bg='#bacae8', width=125, height=20)
-    yInputBlockStart.place(x=145, y=30)
     enterY1 = ttk.Entry(setPointWin)
-    yInputBlockStart.create_window(62, 10, window=enterY1)
-
-    yInputBlockEnd = ttk.Canvas(
-        setPointWin, highlightthickness=0, bg='#bacae8', width=125, height=20)
-    yInputBlockEnd.place(x=145, y=80)
     enterY2 = ttk.Entry(setPointWin)
+
+    #   Izmantojot Tkinter bibliotēku, izveido ievades logu datu ievadīšanai no tastatūras, izmantojot šādus parametrus:
+        #   <skaits>,                       - x koordinātas sākum punkts.
+        #   <skaits>,                       - y koordinātas sākum punkts.
+        #   window = <vidžeta nosaukums>    - vidžeta nosaukums, kurā tiek glabāta informācija.
+    xInputBlockStart.create_window(62, 10, window=enterX1)
+    xInputBlockEnd.create_window(62, 10, window=enterX2)
+    yInputBlockStart.create_window(62, 10, window=enterY1)
     yInputBlockEnd.create_window(62, 10, window=enterY2)
 
+    #   Funkcija apply iegūt informāciju no ievades lodziņiem.
+    #   Ja dati ir ievadīti pareizi, tad funkcija izsauc funkciju DrawLine ar argumentiem, kas satur koordinātas. 
     def Apply():
-        Clear()
-        try:
-            x1 = int(enterX1.get())
-            y1 = int(enterY1.get())
-            x2 = int(enterX2.get())
-            y2 = int(enterY2.get())
-            if x1 < 0 or x1 > 1100 or y1 < 0 or y1 > 550 or x2 < 0 or x2 > 1100 or y2 < 0 or y2 > 550:
-                setPointWin.destroy()
-                messagebox.showwarning(
-                    title='Error', message='Koordinātas nav ievadītas vai ir ievadītas nepareizi. Grafika izmērs ir 1100px uz 550px')
-                return
-            setPointWin.destroy()
-            logResult(x1, y1, x2, y2)
-            DrawLine(x1, y1, x2, y2, True)
-        except:
-            setPointWin.destroy()
-            messagebox.showwarning(
-                title='Error', message='Koordinātas nav ievadītas vai ir ievadītas nepareizi. Grafika izmērs ir 1100px uz 550px')
+        Clear()                             #   Notīra konfliktējošos koda elementus.
+        try:                                #   Pārbauda, ​​vai funkciju var izpildīt.
+            x1 = int(enterX1.get())         #   Iegūt x koordinātas sākum punkts.
+            y1 = int(enterY1.get())         #   Iegūt y koordinātas sākum punkts.
+            x2 = int(enterX2.get())         #   Iegūt x koordinātas gala punkts.
+            y2 = int(enterY2.get())         #   Iegūt y koordinātas gala punkts.
 
-        # button
-    spApplyButton = Button(setPointWin, text="Apply", font=('arial', 8, 'bold'), bg='#f58220',
-                           fg='#ffffff', activebackground='#b76b32', width=16, relief='flat', command=Apply)
+            #   Aptur funkciju, ja koordinātas atrodas ārpus animācijas loga.
+            if x1 < 0 or x1 > 1100 or y1 < 0 or y1 > 550 or x2 < 0 or x2 > 1100 or y2 < 0 or y2 > 550:
+                setPointWin.destroy()       #   <loga/vidžeta nosakums>.destroy() aptur loga rādīšanu, tādējādi izslēdzot visus ar to saistītos procesus.
+
+                #   Parāda paziņojumu par notikušu kļūdu.
+                    #   title = '<nosaukums>',  - Paziņojums loga nosaukums.
+                    #   message = '<teksts>'    - Teksts, kas satur paziņojums.
+                messagebox.showwarning(title='Error', message='Koordinātas nav ievadītas vai ir ievadītas nepareizi. Grafika izmērs ir 1100px uz 550px')
+                return
+            
+            setPointWin.destroy()           #   <loga/vidžeta nosakums>.destroy() aptur loga rādīšanu, tādējādi izslēdzot visus ar to saistītos procesus.
+            logResult(x1, y1, x2, y2)       #   Izsauc logResult funkciju ar argumentiem, kas satur koordinātas.
+            DrawLine(x1, y1, x2, y2)        #   Izsauc DrawLine funkciju ar argumentiem, kas satur koordinātas.
+
+        except:                             #   Ja funkcijas izpildes laikā rodas fatāla kļūda, tad:
+            setPointWin.destroy()               #   Aizver sekundāro logu
+
+            #   Parāda paziņojumu par notikušu kļūdu.
+                #   title = '<nosaukums>',  - Paziņojums loga nosaukums.
+                #   message = '<teksts>'    - Teksts, kas satur paziņojums.
+            messagebox.showwarning(title='Error', message='Koordinātas nav ievadītas vai ir ievadītas nepareizi. Grafika izmērs ir 1100px uz 550px')
+
+    #   Pogas objekts tika izveidots tādā pašā veidā kā 333 rindā.
+    spApplyButton = Button(setPointWin, text="Apply", font=('arial', 8, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=16, relief='flat', command=Apply)
+    spCancelButton = Button(setPointWin, text="Cancel", font=('arial', 8, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=16, relief='flat', command=setPointWin.destroy)
+    
+    #   Objekts tika novietots tādā pašā veidā kā 33. rindā.
+    xBlockStart.place(x=10, y=10)
+    xBlockEnd.place(x=10, y=60)
+    xTextStart.place(x=25, y=10)
+    XTextEnd.place(x=30, y=60)
+    yBlockStart.place(x=145, y=10)
+    yBlockEnd.place(x=145, y=60)
+    yTextStart.place(x=160, y=10)
+    yTextEnd.place(x=170, y=60)
+    xInputBlockStart.place(x=10, y=30)
+    xInputBlockEnd.place(x=10, y=80)
+    yInputBlockStart.place(x=145, y=30)
+    yInputBlockEnd.place(x=145, y=80)
     spApplyButton.place(x=11, y=110)
-    spCancelButton = Button(setPointWin, text="Cancel", font=('arial', 8, 'bold'), bg='#f58220',
-                            fg='#ffffff', activebackground='#b76b32', width=16, relief='flat', command=setPointWin.destroy)
     spCancelButton.place(x=147, y=110)
 
-    setPointWin.mainloop()
+    #  Sekundāra loga attēlošana cilpās, tāpēc tas tiek rādīts visu laiku, līdz funkcija tiek apturēta.
+    setPointWin.mainloop()  
 #endregion
 
 #region Interaktīvas pogas izveide primārajā logā:
 #   Izmantojiet Tkinter bibliotēkas Button klasi, lai izveidotu interaktīvās pogas, izmantojot šādus parametrus:
-    #   root,                                                       - Vecākās loga/vidžeta nosaukums, kurā atrodas poga.
+    #   <nosaukums>,                                                - Vecākās loga/vidžeta nosaukums, kurā atrodas objekts.
     #   text = '<tekts>',                                           - Teksts uz pogas.
     #   font = (<'Teksta fonti','Teksta izmērs','Teksta stils'>'),  - Teksta iestatījumi.
     #   bg = '<krāsa>',                                             - Pogas krāsa.
