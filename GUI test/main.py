@@ -87,82 +87,113 @@ def showPosition(pos):  #   "pos" - arguments, kas satur informāciju par objekt
 #   BIND metode izsauc funkciju katru reizi, kad notiek norādītais notikums.
 rootPlotArea.bind('<Motion>', showPosition)     #   <objekta nosaukums>.bind('<notikums>', <funkcija, kuru izsauc notikums>)
 
+#   motion masīvs ir nepieciešams animācijas renderēšanai, šajā masīvā tiek saglabātas jaunās trajektorijas koordinātas, kas izveidotas ar Brezenhema algoritmu.
+motion = [] 
 
-motion = []
-def DrawLine(x1, y1, x2, y2):
+def BrezenhemaAlgoritms(x1, y1, x2, y2):
     dx = abs(x2-x1)
     dy = abs(y2-y1)
-
+    p = 2*dy-dx
+    
     if x1 < x2:
         xs = 1
     else:
         xs = -1
-    
+
     if y1 < y2:
         ys = 1
     else:
         ys = -1
+
     x = x1
     y = y1
-    p = 2*dy-dx
 
     if dx > dy:
-        # sakumpunkts
-        rootPlotArea.create_oval(
-            x-5, y-5, x+5, y+5, tags="toDraw", fill="#f58220", outline="#f58220")
-        while x < x2:
-            x = x+xs
-            if p > 0:
-                y = y+ys
-                p = p+2*dy-2*dx
-            else:
-                p = p+2*dy
-            rootPlotArea.create_rectangle(
-                x, y, x, y, tags="toDraw", fill="#f58220", outline="#f58220")
-            motion.append(x)
-            motion.append(y)
-        # galapunkts
-        rootPlotArea.create_oval(
-            x-5, y-5, x+5, y+5, tags="toDraw", fill="#f58220", outline="#f58220")
-
+        #   Figūras objekts tika izveidots tādā pašā veidā kā 47. rindā, bet ar tegu "toDraw".
+        rootPlotArea.create_oval(x-5, y-5, x+5, y+5, tags="toDraw", fill="#f58220", outline="#f58220")          #   Tiek izveidots sākuma punkts ar izmēru 10x10 pikseli.
+        if x < x2:
+            while x < x2:
+                if p > 0:
+                    x+=xs
+                    y+=ys
+                    p+=2*dy-2*dx
+                else:
+                    x+=xs
+                    p+=2*dy
+                #       Figūras objekts tika izveidots tādā pašā veidā kā 47. rindā, bet ar tegu "toDraw".
+                rootPlotArea.create_rectangle(x, y, x, y, tags="toDraw", fill="#f58220", outline="#f58220")     #   Tiek izveidots punkts ar izmēru 1x1 pikselis, lai novilktu līniju.
+                motion.append(x)                                                                                #   Aizpilda pēdējo masīva elementu ar x koordinātu.
+                motion.append(y)                                                                                #   Aizpilda pēdējo masīva elementu ar y koordinātu.
+        else:
+            while x > x2:
+                if p > 0:
+                    x+=xs
+                    y+=ys
+                    p+=2*dy-2*dx
+                else:
+                    x+=xs
+                    p+=2*dy
+                #       Figūras objekts tika izveidots tādā pašā veidā kā 47. rindā, bet ar tegu "toDraw".
+                rootPlotArea.create_rectangle(x, y, x, y, tags="toDraw", fill="#f58220", outline="#f58220")     #   Tiek izveidots punkts ar izmēru 1x1 pikselis, lai novilktu līniju.
+                motion.append(x)                                                                                #   Aizpilda pēdējo masīva elementu ar x koordinātu.
+                motion.append(y)                                                                                #   Aizpilda pēdējo masīva elementu ar y koordinātu.
+        #   Figūras objekts tika izveidots tādā pašā veidā kā 47. rindā, bet ar tegu "toDraw".
+        rootPlotArea.create_oval(x-5, y-5, x+5, y+5, tags="toDraw", fill="#f58220", outline="#f58220")          #   Tiek izveidots gala punkts ar izmēru 10x10 pikseli.
     else:
-        # sakumpunkts
-        rootPlotArea.create_oval(
-            x-5, y-5, x+5, y+5, tags="toDraw", fill="#f58220", outline="#f58220")
-        while y < y2:
-            y = y+ys
-            if p > 0:
-                x = x+xs
-                p = p+2*dx-2*dy
-            else:
-                p = p+2*dx
-            rootPlotArea.create_rectangle(
-                x, y, x, y, tags="toDraw", fill="#f58220", outline="#f58220")
-            motion.append(x)
-            motion.append(y)
-        # galapunkts
-        rootPlotArea.create_oval(
-            x-5, y-5, x+5, y+5, tags="toDraw", fill="#f58220", outline="#f58220")
-    createMotion()
+        #   Figūras objekts tika izveidots tādā pašā veidā kā 47. rindā, bet ar tegu "toDraw".
+        rootPlotArea.create_oval(x-5, y-5, x+5, y+5, tags="toDraw", fill="#f58220", outline="#f58220")          #   Tiek izveidots sākuma punkts ar izmēru 10x10 pikseli.
+        if y < y2:
+            while y < y2:
+                if p > 0:
+                    x+=xs
+                    y+=ys
+                    p+=2*dx-2*dy
+                else:
+                    y+=ys
+                    p+=2*dx
+                #   Figūras objekts tika izveidots tādā pašā veidā kā 47. rindā, bet ar tegu "toDraw".
+                rootPlotArea.create_rectangle(x, y, x, y, tags="toDraw", fill="#f58220", outline="#f58220")     #   Tiek izveidots punkts ar izmēru 1x1 pikselis, lai novilktu līniju.
+                motion.append(x)                                                                                #   Aizpilda pēdējo masīva elementu ar x koordinātu.
+                motion.append(y)                                                                                #   Aizpilda pēdējo masīva elementu ar y koordinātu.
+        else:
+            while y > y2:
+                if p > 0:
+                    x+=xs
+                    y+=ys
+                    p+=2*dx-2*dy
+                else:
+                    y+=ys
+                    p+=2*dx
+                #   Figūras objekts tika izveidots tādā pašā veidā kā 47. rindā, bet ar tegu "toDraw".
+                rootPlotArea.create_rectangle(x, y, x, y, tags="toDraw", fill="#f58220", outline="#f58220")     #   Tiek izveidots punkts ar izmēru 1x1 pikselis, lai novilktu līniju.
+                motion.append(x)                                                                                #   Aizpilda pēdējo masīva elementu ar x koordinātu.
+                motion.append(y)                                                                                #   Aizpilda pēdējo masīva elementu ar y koordinātu.
+        #   Figūras objekts tika izveidots tādā pašā veidā kā 47. rindā, bet ar tegu "toDraw".
+        rootPlotArea.create_oval(x-5, y-5, x+5, y+5, tags="toDraw", fill="#f58220", outline="#f58220")          #   Tiek izveidots gala punkts ar izmēru 10x10 pikseli.
+    createMotion()                                                                                              #   Izsauc funkciju createMotion, lai izveidotu no dotajām koordinātām animāciju.
     return
 
+#   Rekursīvā funkcija createMotion pārbauda masīva stāvokli un sāk animācijas ciklu.
 def createMotion():
-    if len(motion) == 0:
+    if len(motion) == 0:                                    #   Ja masīvs sākotnēji ir tukšs, aizver funkciju vai pārtrauc animāciju, ja tā ir spiesta iztukšot
         return
-    try:
+    try:                                                    #   Pārbauda, ​​vai funkciju var izpildīt.
         i = 0
+        #   Cikls dzēš iepriekšējo figūru ar tegu "frame" un zīmē nākamo objektu ar tagu "frame", līdz tas sasniedz pēdējo masīva elementu.
         while i < len(motion):
-            winUpdate()
-            x = motion[i]
-            y = motion[i+1]
-            rootPlotArea.delete("frame")
-            time.sleep(0.02)
-            rootPlotArea.create_oval(
-                x-10, y-10, x+10, y+10, tags="frame", fill="red", outline="red")
-            i += 8
-        createMotion()
-    except:
-        print("motion stopped")
+            winUpdate()                                     #   Atjauno galveno logu, lai izvairītos no kļūdām.
+            rootPlotArea.delete("frame")                    #   Dzēš iepriekšējo figūru ar tegu "frame".
+            x = motion[i]                                   #   Iegūt x-koordinātu nākamajam kadram no nepāra masīva elementa.
+            y = motion[i+1]                                 #   Iegūt y-koordinātu nākamajam kadram no pāra masīva elementa.
+            time.sleep(0.02)                                #   Aptur cilpu uz 20 milisekundēm, lai palēninātu animāciju.
+
+            #   Figūras objekts tika izveidots tādā pašā veidā kā 47. rindā.
+            rootPlotArea.create_oval(x-10, y-10, x+10, y+10, tags="frame", fill="red", outline="red")
+            i += 8                                          #   Lai atvieglotu animāciju, kadrs tiek uzzīmēts, izlaižot 4 punktus.
+        createMotion()                                      #   Cikla beigās funkcija izsauc sevi, lai animācija būtu nepārtraukta.
+        return                                              #   Pēc sevis izsaukšanas funkcija optimizācijas nolūkā aptur savu iepriekšējo darbību.
+    except:                                                 #   Ja funkcijas izpildes laikā rodas fatāla kļūda, tad:
+        print("motion stopped/rebooted")                    #   Parāda ziņojumu, ka animācija ir apturēta.
 
 #   Funkcija logResult atjauno parametra "text=" saturu ar vērtībām no argumentiem.
 def logResult(x1, y1, x2, y2):          #   Argumenti, kas jāsatur koordinātas.
@@ -208,7 +239,7 @@ def getPoint(pos):
         Y2 = setPoint[3]                            #   Iegūst galīgo Y no masīva.
         logResult(X1, Y1, X2, Y2)                   #   Izsauc logResult funkciju ar argumentiem, kas satur koordinātas.
         rootPlotArea.config(cursor="arrow")         #   Atgriež parasto kursoru.
-        DrawLine(X1, Y1, X2, Y2)                    #   Izsauc DrawLine funkciju ar argumentiem, kas satur koordinātas.
+        BrezenhemaAlgoritms(X1, Y1, X2, Y2)         #   Izsauc BrezenhemaAlgoritms funkciju ar argumentiem, kas satur koordinātas.
         rootPlotArea.unbind('<Double-1>')           #   Atvieno notikumu no visas funkcijas.
 
 #   Funkcija Clear aptur animāciju un izdzēš masīvu saturu, atgriež mainīgos to sākotnējā stāvoklī, lai citas funkcijas darbotos pareizi.
@@ -261,7 +292,7 @@ def openHelp():
     ccHeaderText = ttk.Label(helpWin, text='CANCEL', font=('arial', 8, 'bold'), bg='#5159a7', fg='#ffffff')
     ccInfoText = ttk.Label(helpWin, text='Pārtraukt programmu.', font=('arial', 8, 'bold'), bg='#647abc', fg='#ffffff')
 
-    #   Pogas objekts tika izveidots tādā pašā veidā kā 333 rindā.
+    #   Pogas objekts tika izveidots tādā pašā veidā kā 378. rindā.
     helpOkButton = Button(helpWin, text="OK", font=('arial', 8, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=78, relief='flat', command=helpWin.destroy)
 
     #   Objekts tika novietots tādā pašā veidā kā 33. rindā.
@@ -320,7 +351,7 @@ def openSetPoint():
     yInputBlockEnd.create_window(62, 10, window=enterY2)
 
     #   Funkcija apply iegūt informāciju no ievades lodziņiem.
-    #   Ja dati ir ievadīti pareizi, tad funkcija izsauc funkciju DrawLine ar argumentiem, kas satur koordinātas. 
+    #   Ja dati ir ievadīti pareizi, tad funkcija izsauc funkciju BrezenhemaAlgoritms ar argumentiem, kas satur koordinātas. 
     def Apply():
         Clear()                             #   Notīra konfliktējošos koda elementus.
         try:                                #   Pārbauda, ​​vai funkciju var izpildīt.
@@ -341,7 +372,7 @@ def openSetPoint():
             
             setPointWin.destroy()           #   <loga/vidžeta nosakums>.destroy() aptur loga rādīšanu, tādējādi izslēdzot visus ar to saistītos procesus.
             logResult(x1, y1, x2, y2)       #   Izsauc logResult funkciju ar argumentiem, kas satur koordinātas.
-            DrawLine(x1, y1, x2, y2)        #   Izsauc DrawLine funkciju ar argumentiem, kas satur koordinātas.
+            BrezenhemaAlgoritms(x1, y1, x2, y2)        #   Izsauc BrezenhemaAlgoritms funkciju ar argumentiem, kas satur koordinātas.
 
         except:                             #   Ja funkcijas izpildes laikā rodas fatāla kļūda, tad:
             setPointWin.destroy()               #   Aizver sekundāro logu
@@ -351,7 +382,7 @@ def openSetPoint():
                 #   message = '<teksts>'    - Teksts, kas satur paziņojums.
             messagebox.showwarning(title='Error', message='Koordinātas nav ievadītas vai ir ievadītas nepareizi. Grafika izmērs ir 1100px uz 550px')
 
-    #   Pogas objekts tika izveidots tādā pašā veidā kā 333 rindā.
+    #   Pogas objekts tika izveidots tādā pašā veidā kā 378. rindā.
     spApplyButton = Button(setPointWin, text="Apply", font=('arial', 8, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=16, relief='flat', command=Apply)
     spCancelButton = Button(setPointWin, text="Cancel", font=('arial', 8, 'bold'), bg='#f58220', fg='#ffffff', activebackground='#b76b32', width=16, relief='flat', command=setPointWin.destroy)
     
